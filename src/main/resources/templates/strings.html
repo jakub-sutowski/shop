@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Strings Algorithms</title>
+</head>
+<body>
+<h1>Strings Algorithms</h1>
+<form th:action="@{/strings}" method="post" th:object="${stringForm}">
+    <label> Podaj tekst</label>
+    <input th:field="*{text}" type="text"/>
+    <label>Wybierz algorytm</label>
+    <select th:field="*{algorithm}">
+        <option th:each="a : ${algorithms}" th:value="${a}" th:text="${a}"></option>
+    </select>
+    <button type="submit">Execute</button>
+</form>
+</body>
+</html>
