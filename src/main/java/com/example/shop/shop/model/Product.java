@@ -18,19 +18,26 @@ import java.util.List;
 @Data
 @Builder
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull
     @Size(min = 2)
     private String name;
+
     @NotNull
     @Positive
     private double price;
+
     private String description;
+
     private String imageLink;
+
     @ManyToOne
     private Category category;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Opinion> opinions;
 

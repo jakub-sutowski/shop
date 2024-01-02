@@ -1,6 +1,6 @@
 package com.example.shop.shop.mapping;
 
-import com.example.shop.shop.dto.ProductDto;
+import com.example.shop.shop.dto.request.ProductRequest;
 import com.example.shop.shop.exception.exceptions.CategoryNotExist;
 import com.example.shop.shop.model.Product;
 import com.example.shop.shop.repository.CategoryRepository;
@@ -12,12 +12,13 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ProductMapper implements Mapper<Product, ProductDto> {
+public class ProductMapper implements Mapper<Product, ProductRequest> {
+
     private final CategoryRepository categoryRepository;
 
     @Override
-    public ProductDto convert(Product product) {
-        return ProductDto.builder()
+    public ProductRequest convert(Product product) {
+        return ProductRequest.builder()
                 .name(product.getName())
                 .price(product.getPrice())
                 .description(product.getDescription())
@@ -27,22 +28,22 @@ public class ProductMapper implements Mapper<Product, ProductDto> {
     }
 
     @Override
-    public Product reverse(ProductDto productDto) {
+    public Product reverse(ProductRequest productRequest) {
         return Product.builder()
-                .name(productDto.getName())
-                .price(productDto.getPrice())
-                .description(productDto.getDescription())
-                .imageLink(productDto.getImageLink())
-                .category(categoryRepository.findCategoryByName(productDto.getCategory()).orElseThrow(() ->
-                        new CategoryNotExist(productDto.getCategory())))
+                .name(productRequest.getName())
+                .price(productRequest.getPrice())
+                .description(productRequest.getDescription())
+                .imageLink(productRequest.getImageLink())
+                .category(categoryRepository.findCategoryByName(productRequest.getCategory()).orElseThrow(() ->
+                        new CategoryNotExist(productRequest.getCategory())))
                 .build();
     }
 
-    public List<ProductDto> convertList(List<Product> products) {
-        List<ProductDto> productsDto = new ArrayList<>();
+    public List<ProductRequest> convertList(List<Product> products) {
+        List<ProductRequest> productRequests = new ArrayList<>();
         for (Product product : products) {
-            productsDto.add(convert(product));
+            productRequests.add(convert(product));
         }
-        return productsDto;
+        return productRequests;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.shop.shop.dto;
+package com.example.shop.shop.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -14,15 +14,17 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class ProductDto {
+public class ProductRequest {
+
     @NotNull
     @Size(min = 2)
     private String name;
+
     @NotNull
     @Positive
     private double price;
     private String description;
     private String imageLink;
     private String category;
-    private List<OpinionDto> opinions;
+    private List<OpinionRequest> opinions;
 }

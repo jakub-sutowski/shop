@@ -15,16 +15,21 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class Opinion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull
     @Min(1)
     @Max(5)
     private int score;
+
     private String text;
+
     @ManyToOne
     private User user;
+
     @ManyToOne
     private Product product;
 }

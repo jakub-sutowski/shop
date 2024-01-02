@@ -1,4 +1,4 @@
-package com.example.shop.shop.dto;
+package com.example.shop.shop.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -14,15 +14,18 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class UserDto {
+public class UserRequest {
+
     @NotNull
     @Size(min = 2)
     private String firstName;
+
     @NotNull
     @Size(min = 2)
     private String lastName;
+
     @NotNull
     @Email
     private String email;
-    private List<BasketDto> baskets;
+    private List<BasketRequest> baskets;
 }

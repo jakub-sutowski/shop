@@ -1,7 +1,7 @@
 package com.example.shop.shop.controller;
 
-import com.example.shop.shop.dto.CategoryDto;
-import com.example.shop.shop.dto.ProductDto;
+import com.example.shop.shop.dto.request.CategoryRequest;
+import com.example.shop.shop.dto.request.ProductRequest;
 import com.example.shop.shop.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,17 +14,16 @@ import java.util.List;
 @RequestMapping("/api/category")
 @RequiredArgsConstructor
 public class CategoryController {
+
     private final CategoryService categoryService;
 
     @GetMapping("/{name}")
-    public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable("name") String name) {
-        List<ProductDto> productsByCategory = categoryService.getProductsByCategory(name);
-        return ResponseEntity.ok(productsByCategory);
+    public ResponseEntity<List<ProductRequest>> getProductsByCategory(@PathVariable("name") String name) {
+        return ResponseEntity.ok(categoryService.getProductsByCategory(name));
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
-        CategoryDto categoryDtoCreate = categoryService.createCategory(categoryDto);
-        return ResponseEntity.ok(categoryDtoCreate);
+    public ResponseEntity<CategoryRequest> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
+        return ResponseEntity.ok(categoryService.createCategory(categoryRequest));
     }
 }

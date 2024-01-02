@@ -1,42 +1,47 @@
 package com.example.shop.shop.controller;
 
-import com.example.shop.shop.dto.BasketDto;
-import com.example.shop.shop.dto.UserDto;
+import com.example.shop.shop.dto.request.BasketRequest;
+import com.example.shop.shop.dto.request.ChangePasswordRequest;
+import com.example.shop.shop.dto.request.UserRequest;
 import com.example.shop.shop.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("userId") Long id) {
-        UserDto userDto = userService.getUser(id);
-        return ResponseEntity.ok(userDto);
+    @GetMapping("/")
+    public ResponseEntity<UserRequest> getUser(Principal principal) {
+        UserRequest userRequest = userService.getUser(principal);
+        return ResponseEntity.ok(userRequest);
     }
 
-    @GetMapping("/history/{userId}")
-    public ResponseEntity<List<BasketDto>> getBasketHistory(@PathVariable("userId") Long id) {
-        List<BasketDto> basketHistory = userService.getBasketHistoryByUserId(id);
+    @GetMapping("/history/")
+    public ResponseEntity<List<BasketRequest>> getBasketHistory(Principal principal) {
+        List<BasketRequest> basketHistory = userService.getBasketHistoryByUserId(principal);
         return ResponseEntity.ok(basketHistory);
     }
 
-    @GetMapping("/basket/{userId}")
-    public ResponseEntity<BasketDto> getBasket(@PathVariable("userId") Long id) {
-        BasketDto basket = userService.getBasketByUserId(id);
+    @GetMapping("/basket/")
+    public ResponseEntity<BasketRequest> getBasket(Principal principal) {
+        BasketRequest basket = userService.getBasketByUser(principal);
         return ResponseEntity.ok(basket);
     }
 
-    @PostMapping
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
-        UserDto userDto1 = userService.createUser(userDto);
-        return ResponseEntity.ok(userDto1);
+    @PatchMapping
+    public ResponseEntity<?> changePassword(
+            @RequestBody ChangePasswordRequest request,
+            Principal connectedUser
+    ) {
+        userService.changePassword(request, connectedUser);
+        return ResponseEntity.ok().build();
     }
 }

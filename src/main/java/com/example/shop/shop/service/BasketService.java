@@ -1,6 +1,6 @@
 package com.example.shop.shop.service;
 
-import com.example.shop.shop.dto.BasketDto;
+import com.example.shop.shop.dto.request.BasketRequest;
 import com.example.shop.shop.exception.exceptions.BasketNotExist;
 import com.example.shop.shop.exception.exceptions.ProductNotExist;
 import com.example.shop.shop.exception.exceptions.UserNotExist;
@@ -16,25 +16,23 @@ import com.example.shop.shop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class BasketService {
+
     private final BasketRepository basketRepository;
     private final BasketOrderRepository basketOrderRepository;
     private final BasketMapper basketMapper;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    public BasketDto getBasket(Long id) {
-        Basket basket = basketRepository.findById(id).orElseThrow(() -> new BasketNotExist(id.toString()));
-        return basketMapper.convert(basket);
-    }
-
-    public BasketDto addProductToBasket(Long userId, Long productId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotExist(userId.toString()));
+    public BasketRequest addProductToBasket(Principal principal, Long productId) {
+        String mail = principal.getName();
+        User user = userRepository.findByEmail(mail).orElseThrow(() -> new UserNotExist(mail));
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotExist(productId.toString()));
         Basket newBasket = new Basket();
         BasketOrder newBasketOrder = new BasketOrder();

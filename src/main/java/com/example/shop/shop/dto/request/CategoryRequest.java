@@ -1,4 +1,4 @@
-package com.example.shop.shop.dto;
+package com.example.shop.shop.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class CategoryDto {
+public class CategoryRequest {
+
     @NotNull
     @Size(min = 2)
     private String name;

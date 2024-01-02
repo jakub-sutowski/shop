@@ -14,12 +14,16 @@ import java.util.List;
 @Data
 @Builder
 public class Basket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BasketOrder> products;
+
     private boolean isPaid;
+
     @ManyToOne
     private User user;
 

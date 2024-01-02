@@ -14,9 +14,11 @@ import lombok.*;
 @Data
 @Builder
 public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull
     @Size(min = 2)
     private String name;

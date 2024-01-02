@@ -1,4 +1,4 @@
-package com.example.shop.shop.dto;
+package com.example.shop.shop.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class BasketDto {
-    private List<BasketOrderDto> products;
+public class BasketRequest {
+    private List<BasketOrderRequest> products;
     private boolean isPaid;
 }

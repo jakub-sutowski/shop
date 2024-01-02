@@ -1,7 +1,7 @@
 package com.example.shop.shop.service;
 
-import com.example.shop.shop.dto.CategoryDto;
-import com.example.shop.shop.dto.ProductDto;
+import com.example.shop.shop.dto.request.CategoryRequest;
+import com.example.shop.shop.dto.request.ProductRequest;
 import com.example.shop.shop.exception.exceptions.CategoryNotExist;
 import com.example.shop.shop.mapping.CategoryMapper;
 import com.example.shop.shop.mapping.ProductMapper;
@@ -19,25 +19,26 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
+
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final CategoryMapper categoryMapper;
     private final ProductMapper productMapper;
     private final CategoryValidator categoryValidator;
 
-    public CategoryDto createCategory(CategoryDto categoryDto) {
-        categoryValidator.createCategory(categoryDto);
-        Category save = categoryRepository.save(categoryMapper.reverse(categoryDto));
+    public CategoryRequest createCategory(CategoryRequest categoryRequest) {
+        categoryValidator.createCategory(categoryRequest);
+        Category save = categoryRepository.save(categoryMapper.reverse(categoryRequest));
         return categoryMapper.convert(save);
     }
 
-    public List<ProductDto> getProductsByCategory(String name) {
+    public List<ProductRequest> getProductsByCategory(String name) {
         Category category = categoryRepository.findCategoryByName(name).orElseThrow(() -> new CategoryNotExist(name));;
         List<Product> products = productRepository.findProductByCategory(category);
-        List<ProductDto> productsDto = new ArrayList<>();
+        List<ProductRequest> productRequests = new ArrayList<>();
         for (Product product : products) {
-            productsDto.add(productMapper.convert(product));
+            productRequests.add(productMapper.convert(product));
         }
-        return productsDto;
+        return productRequests;
     }
 }

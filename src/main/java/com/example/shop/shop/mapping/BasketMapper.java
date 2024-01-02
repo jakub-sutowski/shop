@@ -1,7 +1,7 @@
 package com.example.shop.shop.mapping;
 
-import com.example.shop.shop.dto.BasketDto;
-import com.example.shop.shop.dto.BasketOrderDto;
+import com.example.shop.shop.dto.request.BasketOrderRequest;
+import com.example.shop.shop.dto.request.BasketRequest;
 import com.example.shop.shop.model.Basket;
 import com.example.shop.shop.model.BasketOrder;
 import lombok.RequiredArgsConstructor;
@@ -12,34 +12,35 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class BasketMapper implements Mapper<Basket, BasketDto> {
+public class BasketMapper implements Mapper<Basket, BasketRequest> {
+
     private final ProductMapper productMapper;
 
     @Override
-    public BasketDto convert(Basket from) {
-        return BasketDto.builder()
+    public BasketRequest convert(Basket from) {
+        return BasketRequest.builder()
                 .products(convertBasketOrderList(from.getProducts()))
                 .isPaid(from.isPaid())
                 .build();
     }
 
     @Override
-    public Basket reverse(BasketDto from) {
+    public Basket reverse(BasketRequest from) {
         return null;
     }
 
-    private BasketOrderDto convertBasketOrder(BasketOrder basketOrder) {
-        return BasketOrderDto.builder()
+    private BasketOrderRequest convertBasketOrder(BasketOrder basketOrder) {
+        return BasketOrderRequest.builder()
                 .product(productMapper.convert(basketOrder.getProduct()))
                 .quantity(basketOrder.getQuantity())
                 .build();
     }
 
-    private List<BasketOrderDto> convertBasketOrderList(List<BasketOrder> basketOrders) {
-        List<BasketOrderDto> basketOrdersDto = new ArrayList<>();
+    private List<BasketOrderRequest> convertBasketOrderList(List<BasketOrder> basketOrders) {
+        List<BasketOrderRequest> basketOrderRequests = new ArrayList<>();
         for (BasketOrder basketOrder : basketOrders) {
-            basketOrdersDto.add(convertBasketOrder(basketOrder));
+            basketOrderRequests.add(convertBasketOrder(basketOrder));
         }
-        return basketOrdersDto;
+        return basketOrderRequests;
     }
 }

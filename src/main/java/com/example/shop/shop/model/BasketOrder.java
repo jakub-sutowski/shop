@@ -13,13 +13,17 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class BasketOrder {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     private Product product;
+
     @Positive
     private int quantity;
+
     @ManyToOne
     private Basket basket;
 
