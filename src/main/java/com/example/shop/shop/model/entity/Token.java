@@ -1,4 +1,4 @@
-package com.example.shop.shop.model;
+package com.example.shop.shop.model.entity;
 
 import com.example.shop.shop.type.TokenType;
 import jakarta.persistence.*;

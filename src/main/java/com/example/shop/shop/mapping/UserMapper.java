@@ -1,7 +1,7 @@
 package com.example.shop.shop.mapping;
 
-import com.example.shop.shop.dto.request.UserRequest;
-import com.example.shop.shop.model.User;
+import com.example.shop.shop.model.entity.User;
+import com.example.shop.shop.model.request.UserRequest;
 import org.springframework.stereotype.Component;
 
 @Component

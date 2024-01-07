@@ -1,7 +1,7 @@
-package com.example.shop.shop.dto.request;
+package com.example.shop.shop.model.request;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,18 +14,17 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class UserRequest {
+public class ProductRequest {
 
     @NotNull
     @Size(min = 2)
-    private String firstName;
+    private String name;
 
     @NotNull
-    @Size(min = 2)
-    private String lastName;
-
-    @NotNull
-    @Email
-    private String email;
-    private List<BasketRequest> baskets;
+    @Positive
+    private double price;
+    private String description;
+    private String imageLink;
+    private String category;
+    private List<OpinionRequest> opinions;
 }

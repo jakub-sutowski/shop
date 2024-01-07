@@ -1,7 +1,7 @@
 package com.example.shop.shop.mapping;
 
-import com.example.shop.shop.dto.request.CategoryRequest;
-import com.example.shop.shop.model.Category;
+import com.example.shop.shop.model.entity.Category;
+import com.example.shop.shop.model.request.CategoryRequest;
 import org.springframework.stereotype.Component;
 
 @Component

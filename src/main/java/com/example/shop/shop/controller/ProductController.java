@@ -1,10 +1,11 @@
 package com.example.shop.shop.controller;
 
-import com.example.shop.shop.dto.request.OpinionRequest;
-import com.example.shop.shop.dto.request.ProductRequest;
+import com.example.shop.shop.model.request.OpinionRequest;
+import com.example.shop.shop.model.request.ProductRequest;
 import com.example.shop.shop.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
+@Log4j2
 public class ProductController {
 
     private final ProductService productService;
@@ -32,6 +34,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductRequest> createProduct(@Valid @RequestBody ProductRequest productRequest) {
         ProductRequest productRequest1 = productService.createProduct(productRequest);
+        log.info("Product {} successfully created", productRequest1);
         return ResponseEntity.ok(productRequest1); // tworze produkt
     }
 

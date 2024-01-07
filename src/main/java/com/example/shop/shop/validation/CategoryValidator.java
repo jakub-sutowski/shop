@@ -1,8 +1,8 @@
 package com.example.shop.shop.validation;
 
-import com.example.shop.shop.dto.request.CategoryRequest;
 import com.example.shop.shop.exception.exceptions.CategoryAlreadyExist;
-import com.example.shop.shop.model.Category;
+import com.example.shop.shop.model.entity.Category;
+import com.example.shop.shop.model.request.CategoryRequest;
 import com.example.shop.shop.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

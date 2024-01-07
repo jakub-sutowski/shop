@@ -1,4 +1,4 @@
-package com.example.shop.shop.dto.request;
+package com.example.shop.shop.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
+public class TokenResponse {
 
-    private String email;
-    String password;
+    private String token;
 }

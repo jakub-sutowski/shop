@@ -1,6 +1,6 @@
 package com.example.shop;
 
-import com.example.shop.shop.dto.request.RegisterRequest;
+import com.example.shop.shop.model.request.RegisterRequest;
 import com.example.shop.shop.service.AuthenticationService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import static com.example.shop.shop.type.Role.ADMIN;
-import static com.example.shop.shop.type.Role.USER;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
@@ -27,9 +26,9 @@ public class ShopApplication {
             var admin = RegisterRequest.builder()
                     .firstName("Zwyklak")
                     .lastName("Admin")
-                    .email("zwyklak@mail.com")
+                    .email("fdfhd@mail.com")
                     .password("password")
-                    .role(USER)
+                    .role(ADMIN)
                     .build();
             System.out.println("Admin token: " + service.register(admin).getAccessToken());
 

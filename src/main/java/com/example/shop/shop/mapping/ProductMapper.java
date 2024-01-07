@@ -1,8 +1,8 @@
 package com.example.shop.shop.mapping;
 
-import com.example.shop.shop.dto.request.ProductRequest;
 import com.example.shop.shop.exception.exceptions.CategoryNotExist;
-import com.example.shop.shop.model.Product;
+import com.example.shop.shop.model.entity.Product;
+import com.example.shop.shop.model.request.ProductRequest;
 import com.example.shop.shop.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

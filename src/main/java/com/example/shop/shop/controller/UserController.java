@@ -1,10 +1,11 @@
 package com.example.shop.shop.controller;
 
-import com.example.shop.shop.dto.request.BasketRequest;
-import com.example.shop.shop.dto.request.ChangePasswordRequest;
-import com.example.shop.shop.dto.request.UserRequest;
+import com.example.shop.shop.model.request.BasketRequest;
+import com.example.shop.shop.model.request.ChangePasswordRequest;
+import com.example.shop.shop.model.request.UserRequest;
 import com.example.shop.shop.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,23 +15,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Log4j2
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<UserRequest> getUser(Principal principal) {
         UserRequest userRequest = userService.getUser(principal);
         return ResponseEntity.ok(userRequest);
     }
 
-    @GetMapping("/history/")
+    @GetMapping("/history")
     public ResponseEntity<List<BasketRequest>> getBasketHistory(Principal principal) {
         List<BasketRequest> basketHistory = userService.getBasketHistoryByUserId(principal);
         return ResponseEntity.ok(basketHistory);
     }
 
-    @GetMapping("/basket/")
+    @GetMapping("/basket")
     public ResponseEntity<BasketRequest> getBasket(Principal principal) {
         BasketRequest basket = userService.getBasketByUser(principal);
         return ResponseEntity.ok(basket);
@@ -42,6 +44,7 @@ public class UserController {
             Principal connectedUser
     ) {
         userService.changePassword(request, connectedUser);
+        log.info("Password for {} successfully changed", connectedUser.getName());
         return ResponseEntity.ok().build();
     }
 }

@@ -1,15 +1,16 @@
 package com.example.shop.shop.service;
 
-import com.example.shop.shop.dto.request.OpinionRequest;
-import com.example.shop.shop.dto.request.ProductRequest;
 import com.example.shop.shop.exception.exceptions.ProductNotExist;
 import com.example.shop.shop.mapping.OpinionMapper;
 import com.example.shop.shop.mapping.ProductMapper;
-import com.example.shop.shop.model.Opinion;
-import com.example.shop.shop.model.Product;
+import com.example.shop.shop.model.entity.Opinion;
+import com.example.shop.shop.model.entity.Product;
+import com.example.shop.shop.model.request.OpinionRequest;
+import com.example.shop.shop.model.request.ProductRequest;
 import com.example.shop.shop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,9 @@ public class ProductService {
         return productMapper.convert(product);
     }
 
-    public ProductRequest createProduct(ProductRequest productRequest) {
-        Product reverse = productMapper.reverse(productRequest);
+    @Transactional
+    public ProductRequest createProduct(ProductRequest request) {
+        Product reverse = productMapper.reverse(request);
         reverse.setOpinions(new ArrayList<>());
         Product save = productRepository.save(reverse);
         return productMapper.convert(save);

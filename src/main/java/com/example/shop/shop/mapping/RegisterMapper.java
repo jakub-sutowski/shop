@@ -1,7 +1,7 @@
 package com.example.shop.shop.mapping;
 
-import com.example.shop.shop.dto.request.RegisterRequest;
-import com.example.shop.shop.model.User;
+import com.example.shop.shop.model.entity.User;
+import com.example.shop.shop.model.request.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,8 @@
 package com.example.shop.shop.mapping;
 
-import com.example.shop.shop.dto.request.OpinionRequest;
-import com.example.shop.shop.model.Opinion;
-import com.example.shop.shop.model.User;
+import com.example.shop.shop.model.entity.Opinion;
+import com.example.shop.shop.model.entity.User;
+import com.example.shop.shop.model.request.OpinionRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

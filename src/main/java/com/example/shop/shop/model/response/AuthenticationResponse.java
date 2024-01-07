@@ -1,4 +1,4 @@
-package com.example.shop.shop.dto.response;
+package com.example.shop.shop.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

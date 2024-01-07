@@ -1,9 +1,9 @@
 package com.example.shop.shop.mapping;
 
-import com.example.shop.shop.dto.request.BasketOrderRequest;
-import com.example.shop.shop.dto.request.BasketRequest;
-import com.example.shop.shop.model.Basket;
-import com.example.shop.shop.model.BasketOrder;
+import com.example.shop.shop.model.entity.Basket;
+import com.example.shop.shop.model.entity.BasketOrder;
+import com.example.shop.shop.model.request.BasketOrderRequest;
+import com.example.shop.shop.model.request.BasketRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

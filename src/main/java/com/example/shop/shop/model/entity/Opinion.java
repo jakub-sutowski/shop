@@ -1,4 +1,4 @@
-package com.example.shop.shop.model;
+package com.example.shop.shop.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
