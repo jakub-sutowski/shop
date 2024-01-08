@@ -6,6 +6,7 @@ import com.example.shop.shop.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,15 +20,17 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductRequest> getProduct(@PathVariable("id") Long id) {
-        ProductRequest productRequests = productService.getProduct(id);
+    @GetMapping("/{productCode}")
+    public ResponseEntity<ProductRequest> getProduct(@PathVariable("productCode") Long productCode) {
+        ProductRequest productRequests = productService.getProduct(productCode);
         return ResponseEntity.ok(productRequests); // zwracamy docelowy produkt
     }
 
-    @GetMapping("/{id}/opinions")
-    public ResponseEntity<List<OpinionRequest>> getOpinionsByProduct(@PathVariable("id") Long id) {
-        List<OpinionRequest> opinionsByProduct = productService.getOpinionsByProduct(id);
+    @GetMapping("/{productCode}/opinions")
+    public ResponseEntity<Page<OpinionRequest>> getOpinionsByProduct(@PathVariable("productCode") Long productCode,
+                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size) {
+        Page<OpinionRequest> opinionsByProduct = productService.getOpinionsByProduct(productCode, page, size);
         return ResponseEntity.ok(opinionsByProduct);
     }
 

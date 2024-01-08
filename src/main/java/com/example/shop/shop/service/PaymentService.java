@@ -1,9 +1,7 @@
 package com.example.shop.shop.service;
 
-import com.example.shop.shop.mapping.BasketMapper;
 import com.example.shop.shop.model.request.BasketRequest;
 import com.example.shop.shop.model.request.PaymentRequest;
-import com.example.shop.shop.repository.BasketRepository;
 import com.example.shop.shop.util.StatusCodeTranslationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -25,7 +25,9 @@ public class BankService {
 
     public String pay(PaymentRequest request) {
         String payUrl = bankBaseUrl + bankPayUrl;
+
         ResponseEntity<PaymentResponse> paymentResponse = restTemplate.postForEntity(payUrl, request, PaymentResponse.class);
+
         return Optional.ofNullable(paymentResponse.getBody())
                 .map(PaymentResponse::getStatusCode)
                 .orElseThrow(BankRequestException::new);

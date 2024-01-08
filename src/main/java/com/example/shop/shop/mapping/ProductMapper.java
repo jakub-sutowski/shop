@@ -19,6 +19,7 @@ public class ProductMapper implements Mapper<Product, ProductRequest> {
     @Override
     public ProductRequest convert(Product product) {
         return ProductRequest.builder()
+                .productCode(product.getProductCode())
                 .name(product.getName())
                 .price(product.getPrice())
                 .description(product.getDescription())
@@ -30,6 +31,7 @@ public class ProductMapper implements Mapper<Product, ProductRequest> {
     @Override
     public Product reverse(ProductRequest productRequest) {
         return Product.builder()
+                .productCode(productRequest.getProductCode())
                 .name(productRequest.getName())
                 .price(productRequest.getPrice())
                 .description(productRequest.getDescription())

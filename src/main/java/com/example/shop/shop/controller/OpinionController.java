@@ -18,13 +18,13 @@ public class OpinionController {
 
     private final OpinionService opinionService;
 
-    @PostMapping("/{productId}")
+    @PostMapping("/{productCode}")
     public ResponseEntity<OpinionRequest> createOpinion(
-            @Valid @PathVariable("productId") Long productId,
+            @Valid @PathVariable("productCode") Long productCode,
             Principal principal,
             @RequestBody OpinionRequest opinionRequest) {
-        OpinionRequest createdOpinion = opinionService.createOpinion(principal, productId, opinionRequest);
-        log.info("Opinion to product {} successfully created", productId);
+        OpinionRequest createdOpinion = opinionService.createOpinion(principal, productCode, opinionRequest);
+        log.info("Opinion to product {} successfully created", productCode);
         return ResponseEntity.ok(createdOpinion);
     }
 }

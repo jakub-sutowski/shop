@@ -11,6 +11,8 @@ import com.example.shop.shop.repository.CategoryRepository;
 import com.example.shop.shop.repository.ProductRepository;
 import com.example.shop.shop.validation.CategoryValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,17 +32,15 @@ public class CategoryService {
     @Transactional
     public CategoryRequest createCategory(CategoryRequest request) {
         categoryValidator.createCategory(request);
-        Category save = categoryRepository.save(categoryMapper.reverse(request));
-        return categoryMapper.convert(save);
+        Category savedCategory = categoryRepository.save(categoryMapper.reverse(request));
+        return categoryMapper.convert(savedCategory);
     }
 
-    public List<ProductRequest> getProductsByCategory(String name) {
+    public Page<ProductRequest> getProductsByCategory(String name, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
         Category category = categoryRepository.findCategoryByName(name).orElseThrow(() -> new CategoryNotExist(name));
-        List<Product> products = productRepository.findProductByCategory(category);
-        List<ProductRequest> productRequests = new ArrayList<>();
-        for (Product product : products) {
-            productRequests.add(productMapper.convert(product));
-        }
-        return productRequests;
+        Page<Product> products = productRepository.findProductByCategory(category, pageRequest);
+
+        return products.map(productMapper::convert);
     }
 }

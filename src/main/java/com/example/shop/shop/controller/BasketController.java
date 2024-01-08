@@ -21,12 +21,12 @@ public class BasketController {
 
     private final BasketService basketService;
 
-    @PostMapping("/{productId}")
+    @PostMapping("/{productCode}")
     public ResponseEntity<BasketRequest> addProductToBasket(
             @Valid
-            @PathVariable("productId") Long productId,
+            @PathVariable("productCode") Long productCode,
             Principal principal) {
-        BasketRequest basketRequest = basketService.addProductToBasket(principal, productId);
+        BasketRequest basketRequest = basketService.addProductToBasket(principal, productCode);
         log.info("Basket {} successfully created", basketRequest);
         return ResponseEntity.ok(basketRequest);
     }

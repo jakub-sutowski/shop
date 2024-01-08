@@ -26,15 +26,16 @@ public class OpinionService {
     private final UserRepository userRepository;
 
     @Transactional
-    public OpinionRequest createOpinion(Principal principal, Long productId, OpinionRequest request) {
-        String mail = principal.getName();
-        User user = userRepository.findByEmail(mail).orElseThrow(() -> new UserNotExist(mail));
-        Opinion save = opinionMapper.reverseSave(request, user);
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotExist(productId.toString()));
-        save.setProduct(product);
-        Opinion save1 = opinionRepository.save(save);
-        return opinionMapper.convert(save1);
+    public OpinionRequest createOpinion(Principal principal, Long productCode, OpinionRequest request) {
+        String email = principal.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotExist(email));
+
+        Opinion opinionToSave = opinionMapper.reverseSave(request, user);
+        Product product = productRepository.findProductByProductCode(productCode).orElseThrow(() -> new ProductNotExist(productCode.toString()));
+        opinionToSave.setProduct(product);
+
+        Opinion savedOpinion = opinionRepository.save(opinionToSave);
+
+        return opinionMapper.convert(savedOpinion);
     }
-
-
 }

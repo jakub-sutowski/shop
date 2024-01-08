@@ -6,6 +6,7 @@ import com.example.shop.shop.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,10 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/{name}")
-    public ResponseEntity<List<ProductRequest>> getProductsByCategory(@PathVariable("name") String name) {
-        return ResponseEntity.ok(categoryService.getProductsByCategory(name));
+    public ResponseEntity<Page<ProductRequest>> getProductsByCategory(@PathVariable("name") String name,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(categoryService.getProductsByCategory(name, page, size));
     }
 
     @PostMapping

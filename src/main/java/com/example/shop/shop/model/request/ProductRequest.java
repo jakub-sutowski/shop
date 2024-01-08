@@ -19,7 +19,8 @@ public class ProductRequest {
     @NotNull
     @Size(min = 2)
     private String name;
-
+    @NotNull
+    private Long productCode;
     @NotNull
     @Positive
     private double price;

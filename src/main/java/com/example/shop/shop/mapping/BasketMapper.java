@@ -20,7 +20,7 @@ public class BasketMapper implements Mapper<Basket, BasketRequest> {
     public BasketRequest convert(Basket from) {
         return BasketRequest.builder()
                 .products(convertBasketOrderList(from.getProducts()))
-                .isPaid(from.isPaid())
+                .paid(from.isPaid())
                 .build();
     }
 

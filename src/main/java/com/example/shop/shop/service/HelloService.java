@@ -11,11 +11,15 @@ import java.security.Principal;
 @Service
 @RequiredArgsConstructor
 public class HelloService {
+
     private final UserRepository userRepository;
 
     public String sayHello(Principal principal) {
         String email = principal.getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotExist(email));
-        return "Hello, " + user.getFirstName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotExist(email));
+
+        return "Hello, " + user.getFirstName() + "!";
     }
 }

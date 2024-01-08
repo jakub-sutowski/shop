@@ -31,7 +31,9 @@ public class TokenService {
         String generateTokenUrl = tokenBaseUrl + tokenGenerateUrl;
         UserRequest user = userService.getUser(principal);
         TokenRequest tokenRequest = new TokenRequest(user.getEmail());
+
         ResponseEntity<TokenResponse> tokenResponse = restTemplate.postForEntity(generateTokenUrl, tokenRequest, TokenResponse.class);
+
         return Optional.ofNullable(tokenResponse.getBody())
                 .map(TokenResponse::getToken)
                 .orElseThrow(TokenRequestException::new);

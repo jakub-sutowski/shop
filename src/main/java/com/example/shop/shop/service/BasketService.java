@@ -1,17 +1,14 @@
 package com.example.shop.shop.service;
 
 import com.example.shop.shop.exception.exceptions.ProductNotExist;
-import com.example.shop.shop.exception.exceptions.UserNotExist;
 import com.example.shop.shop.mapping.BasketMapper;
 import com.example.shop.shop.model.entity.Basket;
 import com.example.shop.shop.model.entity.BasketOrder;
 import com.example.shop.shop.model.entity.Product;
 import com.example.shop.shop.model.entity.User;
 import com.example.shop.shop.model.request.BasketRequest;
-import com.example.shop.shop.repository.BasketOrderRepository;
 import com.example.shop.shop.repository.BasketRepository;
 import com.example.shop.shop.repository.ProductRepository;
-import com.example.shop.shop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +24,8 @@ public class BasketService {
 
     private final BasketRepository basketRepository;
     private final BasketMapper basketMapper;
-    private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final UserService userService;
 
     public double getTotalAmount(BasketRequest request) {
         return request.getProducts().stream()
@@ -37,49 +34,51 @@ public class BasketService {
     }
 
     @Transactional
-    public BasketRequest addProductToBasket(Principal principal, Long productId) {
-        String mail = principal.getName();
-        User user = userRepository.findByEmail(mail).orElseThrow(() -> new UserNotExist(mail));
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotExist(productId.toString()));
+    public BasketRequest addProductToBasket(Principal principal, Long productCode) {
+        User user = userService.getLoggedUser(principal);
+        Product product = productRepository.findProductByProductCode(productCode).orElseThrow(() -> new ProductNotExist(productCode.toString()));
         List<Basket> baskets = user.getBaskets();
         Basket newBasket = findUnpaidBasket(baskets);
+
         if (newBasket == null) {
             newBasket = createNewBasket(user, product);
             baskets.add(newBasket);
         } else {
-            updateBasketWithProduct(newBasket, product, productId);
+            updateBasketWithProduct(newBasket, product, productCode);
         }
-        Basket save = basketRepository.save(newBasket);
-        return basketMapper.convert(save);
+
+        Basket savedBasket = basketRepository.save(newBasket);
+        return basketMapper.convert(savedBasket);
     }
 
     private Basket findUnpaidBasket(List<Basket> baskets) {
-        for (Basket basket : baskets) {
-            if (!basket.isPaid()) {
-                return basket;
-            }
-        }
-        return null;
+        return baskets.stream()
+                .filter(basket -> !basket.isPaid())
+                .findFirst()
+                .orElse(null);
     }
 
     private Basket createNewBasket(User user, Product product) {
         Basket newBasket = new Basket();
         BasketOrder newBasketOrder = new BasketOrder();
         List<BasketOrder> basketOrders = new ArrayList<>();
+
         newBasket.setUser(user);
         newBasketOrder.setBasket(newBasket);
         newBasketOrder.setProduct(product);
         newBasketOrder.setQuantity(1);
         basketOrders.add(newBasketOrder);
         newBasket.setProducts(basketOrders);
+
         return newBasket;
     }
 
-    private void updateBasketWithProduct(Basket basket, Product product, Long productId) {
+    private void updateBasketWithProduct(Basket basket, Product product, Long productCode) {
         List<BasketOrder> productsInBasket = basket.getProducts();
         Optional<BasketOrder> existingOrder = productsInBasket.stream()
-                .filter(order -> order.getProduct().getId().equals(productId))
+                .filter(order -> order.getProduct().getProductCode().equals(productCode))
                 .findFirst();
+
         if (existingOrder.isPresent()) {
             existingOrder.get().setQuantity(existingOrder.get().getQuantity() + 1);
         } else {
@@ -93,9 +92,9 @@ public class BasketService {
 
     @Transactional
     public void changeBasketToPaid(Principal principal) {
-        String mail = principal.getName();
-        User user = userRepository.findByEmail(mail).orElseThrow(() -> new UserNotExist(mail));
+        User user = userService.getLoggedUser(principal);
         List<Basket> baskets = user.getBaskets();
+
         for (Basket basket : baskets) {
             if (!basket.isPaid()) {
                 basket.setPaid(true);
@@ -104,4 +103,3 @@ public class BasketService {
         }
     }
 }
-

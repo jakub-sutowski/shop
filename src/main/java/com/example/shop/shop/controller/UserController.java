@@ -6,6 +6,7 @@ import com.example.shop.shop.model.request.UserRequest;
 import com.example.shop.shop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +28,10 @@ public class UserController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<BasketRequest>> getBasketHistory(Principal principal) {
-        List<BasketRequest> basketHistory = userService.getBasketHistoryByUserId(principal);
+    public ResponseEntity<Page<BasketRequest>> getBasketHistory(Principal principal,
+                                                                @RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "10") int size) {
+        Page<BasketRequest> basketHistory = userService.getBasketHistoryByUserId(principal, page, size);
         return ResponseEntity.ok(basketHistory);
     }
 

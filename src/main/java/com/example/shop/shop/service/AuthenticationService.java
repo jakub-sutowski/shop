@@ -1,22 +1,31 @@
 package com.example.shop.shop.service;
 
+import com.example.shop.shop.exception.exceptions.BankRequestException;
+import com.example.shop.shop.exception.exceptions.TokenRequestException;
 import com.example.shop.shop.model.entity.Token;
 import com.example.shop.shop.model.entity.User;
-import com.example.shop.shop.model.entity.UserBank;
-import com.example.shop.shop.model.entity.UserToken;
+import com.example.shop.shop.model.request.UserBankRequest;
+import com.example.shop.shop.model.request.UserTokenRequest;
 import com.example.shop.shop.model.request.AuthenticationRequest;
 import com.example.shop.shop.model.request.RegisterRequest;
 import com.example.shop.shop.model.response.AuthenticationResponse;
+import com.example.shop.shop.model.response.PaymentResponse;
+import com.example.shop.shop.model.response.UserBankResponse;
+import com.example.shop.shop.model.response.UserTokenResponse;
 import com.example.shop.shop.repository.TokenRepository;
 import com.example.shop.shop.repository.UserRepository;
 import com.example.shop.shop.type.TokenType;
+import com.example.shop.shop.util.StatusCodeTranslationUtil;
 import com.example.shop.shop.validation.UserValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,9 +35,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AuthenticationService {
 
     private final UserRepository userRepository;
@@ -65,24 +76,32 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(save, jwtToken);
-        registerToToken(user);
-        registerToBank(user);
+        String tokenResponse = registerToToken(user);
+        String bankResponse = registerToBank(user);
+        log.info(StatusCodeTranslationUtil.translateStatusCode(tokenResponse));
+        log.info(StatusCodeTranslationUtil.translateStatusCode(bankResponse));
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
-    private void registerToBank(User user) {
+    private String registerToBank(User user) {
         String registerBankUrl = bankBaseUrl + bankAddUserUrl;
-        UserBank userBank = UserBank.builder().email(user.getEmail()).build();
-        restTemplate.postForEntity(registerBankUrl, userBank, UserBank.class);
+        UserBankRequest userBankRequest = UserBankRequest.builder().email(user.getEmail()).build();
+        ResponseEntity<UserBankResponse> response = restTemplate.postForEntity(registerBankUrl, userBankRequest, UserBankResponse.class);
+        return Optional.ofNullable(response.getBody())
+                .map(UserBankResponse::getStatusCode)
+                .orElseThrow(BankRequestException::new);
     }
 
-    private void registerToToken(User user) {
+    private String registerToToken(User user) {
         String registerTokenUrl = tokenBaseUrl + tokenAddUserUrl;
-        UserToken userToken = UserToken.builder().email(user.getEmail()).build();
-        restTemplate.postForEntity(registerTokenUrl, userToken, UserToken.class);
+        UserTokenRequest userTokenRequest = UserTokenRequest.builder().email(user.getEmail()).build();
+        ResponseEntity<UserTokenResponse> response = restTemplate.postForEntity(registerTokenUrl, userTokenRequest, UserTokenResponse.class);
+        return Optional.ofNullable(response.getBody())
+                .map(UserTokenResponse::getStatusCode)
+                .orElseThrow(TokenRequestException::new);
     }
 
     @Transactional
