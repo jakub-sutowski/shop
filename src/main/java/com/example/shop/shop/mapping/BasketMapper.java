@@ -2,8 +2,8 @@ package com.example.shop.shop.mapping;
 
 import com.example.shop.shop.model.entity.Basket;
 import com.example.shop.shop.model.entity.BasketOrder;
-import com.example.shop.shop.model.request.BasketOrderRequest;
-import com.example.shop.shop.model.request.BasketRequest;
+import com.example.shop.shop.model.dto.BasketOrderDto;
+import com.example.shop.shop.model.dto.BasketDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,35 +12,35 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class BasketMapper implements Mapper<Basket, BasketRequest> {
+public class BasketMapper implements Mapper<Basket, BasketDto> {
 
     private final ProductMapper productMapper;
 
     @Override
-    public BasketRequest convert(Basket from) {
-        return BasketRequest.builder()
+    public BasketDto convert(Basket from) {
+        return BasketDto.builder()
                 .products(convertBasketOrderList(from.getProducts()))
                 .paid(from.isPaid())
                 .build();
     }
 
     @Override
-    public Basket reverse(BasketRequest from) {
+    public Basket reverse(BasketDto from) {
         return null;
     }
 
-    private BasketOrderRequest convertBasketOrder(BasketOrder basketOrder) {
-        return BasketOrderRequest.builder()
+    private BasketOrderDto convertBasketOrder(BasketOrder basketOrder) {
+        return BasketOrderDto.builder()
                 .product(productMapper.convert(basketOrder.getProduct()))
                 .quantity(basketOrder.getQuantity())
                 .build();
     }
 
-    private List<BasketOrderRequest> convertBasketOrderList(List<BasketOrder> basketOrders) {
-        List<BasketOrderRequest> basketOrderRequests = new ArrayList<>();
+    private List<BasketOrderDto> convertBasketOrderList(List<BasketOrder> basketOrders) {
+        List<BasketOrderDto> basketOrderDtos = new ArrayList<>();
         for (BasketOrder basketOrder : basketOrders) {
-            basketOrderRequests.add(convertBasketOrder(basketOrder));
+            basketOrderDtos.add(convertBasketOrder(basketOrder));
         }
-        return basketOrderRequests;
+        return basketOrderDtos;
     }
 }

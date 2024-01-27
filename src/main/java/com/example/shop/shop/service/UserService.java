@@ -5,9 +5,9 @@ import com.example.shop.shop.mapping.BasketMapper;
 import com.example.shop.shop.mapping.UserMapper;
 import com.example.shop.shop.model.entity.Basket;
 import com.example.shop.shop.model.entity.User;
-import com.example.shop.shop.model.request.BasketRequest;
+import com.example.shop.shop.model.dto.BasketDto;
 import com.example.shop.shop.model.request.ChangePasswordRequest;
-import com.example.shop.shop.model.request.UserRequest;
+import com.example.shop.shop.model.dto.UserDto;
 import com.example.shop.shop.repository.BasketRepository;
 import com.example.shop.shop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +31,12 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserRequest getUser(Principal principal) {
+    public UserDto getUser(Principal principal) {
         User user = getLoggedUser(principal);
         return getUserDto(user);
     }
 
-    public UserRequest getUserDto(User user) {
+    public UserDto getUserDto(User user) {
         return userMapper.convert(user);
     }
 
@@ -45,14 +45,14 @@ public class UserService {
         return userRepository.findByEmail(mail).orElseThrow(() -> new UserNotExist(mail));
     }
 
-    public Page<BasketRequest> getBasketHistoryByUserId(Principal principal, int page, int size) {
+    public Page<BasketDto> getBasketHistoryByUserId(Principal principal, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         User user = getLoggedUser(principal);
         Page<Basket> historyBaskets = basketRepository.findBasketsByUserAndPaidIs(user, pageRequest, true);
         return historyBaskets.map(basketMapper::convert);
     }
 
-    public BasketRequest getBasketByUser(Principal principal) {
+    public BasketDto getBasketByUser(Principal principal) {
         User user = getLoggedUser(principal);
         List<Basket> baskets = user.getBaskets();
         Basket newBasket = new Basket();
@@ -66,23 +66,16 @@ public class UserService {
     }
 
     @Transactional
-    public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
-        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+    public void changePassword(ChangePasswordRequest request, Principal principal) {
+        var user = (User) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
 
-        // Check if the current password is correct
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new IllegalStateException("Wrong password");
         }
-
-        // Check if the two new passwords are the same
         if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
             throw new IllegalStateException("Passwords are not the same");
         }
-
-        // Update the password
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-
-        // Save the new password
         userRepository.save(user);
     }
 }

@@ -1,15 +1,15 @@
 package com.example.shop.shop.mapping;
 
 import com.example.shop.shop.model.entity.User;
-import com.example.shop.shop.model.request.UserRequest;
+import com.example.shop.shop.model.dto.UserDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper implements Mapper<User, UserRequest> {
+public class UserMapper implements Mapper<User, UserDto> {
 
     @Override
-    public UserRequest convert(User from) {
-        return UserRequest.builder()
+    public UserDto convert(User from) {
+        return UserDto.builder()
                 .firstName(from.getFirstName())
                 .lastName(from.getLastName())
                 .email(from.getEmail())
@@ -17,7 +17,7 @@ public class UserMapper implements Mapper<User, UserRequest> {
     }
 
     @Override
-    public User reverse(UserRequest from) {
+    public User reverse(UserDto from) {
         return User.builder()
                 .firstName(from.getFirstName())
                 .lastName(from.getLastName())

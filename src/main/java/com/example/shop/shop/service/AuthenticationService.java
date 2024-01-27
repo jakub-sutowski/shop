@@ -2,26 +2,23 @@ package com.example.shop.shop.service;
 
 import com.example.shop.shop.exception.exceptions.BankRequestException;
 import com.example.shop.shop.exception.exceptions.TokenRequestException;
+import com.example.shop.shop.exception.exceptions.UserAlreadyExist;
 import com.example.shop.shop.model.entity.Token;
 import com.example.shop.shop.model.entity.User;
-import com.example.shop.shop.model.request.UserBankRequest;
-import com.example.shop.shop.model.request.UserTokenRequest;
 import com.example.shop.shop.model.request.AuthenticationRequest;
 import com.example.shop.shop.model.request.RegisterRequest;
+import com.example.shop.shop.model.request.UserRequest;
 import com.example.shop.shop.model.response.AuthenticationResponse;
-import com.example.shop.shop.model.response.PaymentResponse;
-import com.example.shop.shop.model.response.UserBankResponse;
-import com.example.shop.shop.model.response.UserTokenResponse;
+import com.example.shop.shop.model.response.StatusResponse;
 import com.example.shop.shop.repository.TokenRepository;
 import com.example.shop.shop.repository.UserRepository;
+import com.example.shop.shop.type.StatusCode;
 import com.example.shop.shop.type.TokenType;
-import com.example.shop.shop.util.StatusCodeTranslationUtil;
 import com.example.shop.shop.validation.UserValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -76,32 +73,31 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(save, jwtToken);
-        String tokenResponse = registerToToken(user);
-        String bankResponse = registerToBank(user);
-        log.info(StatusCodeTranslationUtil.translateStatusCode(tokenResponse));
-        log.info(StatusCodeTranslationUtil.translateStatusCode(bankResponse));
+        StatusCode tokenResponse = registerToToken(user);
+        StatusCode bankResponse = registerToBank(user);
+        log.info(tokenResponse);
+        log.info(bankResponse);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
-    private String registerToBank(User user) {
-        String registerBankUrl = bankBaseUrl + bankAddUserUrl;
-        UserBankRequest userBankRequest = UserBankRequest.builder().email(user.getEmail()).build();
-        ResponseEntity<UserBankResponse> response = restTemplate.postForEntity(registerBankUrl, userBankRequest, UserBankResponse.class);
-        return Optional.ofNullable(response.getBody())
-                .map(UserBankResponse::getStatusCode)
-                .orElseThrow(BankRequestException::new);
+    private StatusCode registerToBank(User user) {
+        return getStatusCode(user, bankBaseUrl, bankAddUserUrl);
     }
 
-    private String registerToToken(User user) {
-        String registerTokenUrl = tokenBaseUrl + tokenAddUserUrl;
-        UserTokenRequest userTokenRequest = UserTokenRequest.builder().email(user.getEmail()).build();
-        ResponseEntity<UserTokenResponse> response = restTemplate.postForEntity(registerTokenUrl, userTokenRequest, UserTokenResponse.class);
+    private StatusCode registerToToken(User user) {
+        return getStatusCode(user, tokenBaseUrl, tokenAddUserUrl);
+    }
+
+    private StatusCode getStatusCode(User user, String baseUrl, String addUserUrl) {
+        String registerUrl = baseUrl + addUserUrl;
+        UserRequest userRequest = UserRequest.builder().email(user.getEmail()).build();
+        ResponseEntity<StatusResponse> response = restTemplate.postForEntity(registerUrl, userRequest, StatusResponse.class);
         return Optional.ofNullable(response.getBody())
-                .map(UserTokenResponse::getStatusCode)
-                .orElseThrow(TokenRequestException::new);
+                .map(StatusResponse::getStatusCode)
+                .orElseThrow(() -> new UserAlreadyExist(user.getEmail()));
     }
 
     @Transactional

@@ -1,4 +1,4 @@
-package com.example.shop.shop.model.request;
+package com.example.shop.shop.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class ProductRequest {
+public class ProductDto {
 
     @NotNull
     @Size(min = 2)
@@ -27,5 +27,5 @@ public class ProductRequest {
     private String description;
     private String imageLink;
     private String category;
-    private List<OpinionRequest> opinions;
+    private List<OpinionDto> opinions;
 }

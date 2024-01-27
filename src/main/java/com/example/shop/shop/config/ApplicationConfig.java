@@ -21,11 +21,6 @@ public class ApplicationConfig {
     private final UserRepository userRepository;
 
     @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
-    @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
@@ -38,11 +33,6 @@ public class ApplicationConfig {
         return authProvider;
     }
 
-//    @Bean
-//    public AuditorAware<Long> auditorAware() {
-//        return new ApplicationAuditAware();
-//    }
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
@@ -51,6 +41,11 @@ public class ApplicationConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.shop.shop.config;
+package com.example.shop.shop.util;
 
 import com.example.shop.shop.repository.TokenRepository;
 import com.example.shop.shop.service.JwtService;

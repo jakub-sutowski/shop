@@ -1,4 +1,4 @@
-package com.example.shop.shop.model.request;
+package com.example.shop.shop.model.dto;
 
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class BasketOrderRequest {
+public class BasketOrderDto {
 
-    private ProductRequest product;
+    private ProductDto product;
 
     @Positive
     private int quantity;

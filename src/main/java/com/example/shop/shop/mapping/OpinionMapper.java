@@ -2,32 +2,32 @@ package com.example.shop.shop.mapping;
 
 import com.example.shop.shop.model.entity.Opinion;
 import com.example.shop.shop.model.entity.User;
-import com.example.shop.shop.model.request.OpinionRequest;
+import com.example.shop.shop.model.dto.OpinionDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class OpinionMapper implements Mapper<Opinion, OpinionRequest> {
+public class OpinionMapper implements Mapper<Opinion, OpinionDto> {
 
     @Override
-    public OpinionRequest convert(Opinion from) {
-        return OpinionRequest.builder()
+    public OpinionDto convert(Opinion from) {
+        return OpinionDto.builder()
                 .score(from.getScore())
                 .text(from.getText())
                 .build();
     }
 
     @Override
-    public Opinion reverse(OpinionRequest from) {
+    public Opinion reverse(OpinionDto from) {
         return Opinion.builder()
                 .score(from.getScore())
                 .text(from.getText())
                 .build();
     }
 
-    public Opinion reverseSave(OpinionRequest from, User user) {
+    public Opinion reverseSave(OpinionDto from, User user) {
         return Opinion.builder()
                 .score(from.getScore())
                 .text(from.getText())
@@ -35,8 +35,8 @@ public class OpinionMapper implements Mapper<Opinion, OpinionRequest> {
                 .build();
     }
 
-    public List<OpinionRequest> convertList(List<Opinion> opinions) {
-        List<OpinionRequest> opinionsRequest = new ArrayList<>();
+    public List<OpinionDto> convertList(List<Opinion> opinions) {
+        List<OpinionDto> opinionsRequest = new ArrayList<>();
         for (Opinion opinion : opinions) {
             opinionsRequest.add(convert(opinion));
         }

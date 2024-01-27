@@ -1,6 +1,7 @@
-package com.example.shop.shop.model.request;
+package com.example.shop.shop.model.dto;
 
-import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class UserTokenRequest {
+public class OpinionDto {
 
     @NotNull
-    @Email
-    private String email;
+    @Min(1)
+    @Max(5)
+    private int score;
 
+    private String text;
 }

@@ -6,7 +6,7 @@ import com.example.shop.shop.mapping.OpinionMapper;
 import com.example.shop.shop.model.entity.Opinion;
 import com.example.shop.shop.model.entity.Product;
 import com.example.shop.shop.model.entity.User;
-import com.example.shop.shop.model.request.OpinionRequest;
+import com.example.shop.shop.model.dto.OpinionDto;
 import com.example.shop.shop.repository.OpinionRepository;
 import com.example.shop.shop.repository.ProductRepository;
 import com.example.shop.shop.repository.UserRepository;
@@ -26,7 +26,7 @@ public class OpinionService {
     private final UserRepository userRepository;
 
     @Transactional
-    public OpinionRequest createOpinion(Principal principal, Long productCode, OpinionRequest request) {
+    public OpinionDto createOpinion(Principal principal, Long productCode, OpinionDto request) {
         String email = principal.getName();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotExist(email));
 

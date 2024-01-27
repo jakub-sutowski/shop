@@ -1,5 +1,6 @@
 package com.example.shop.shop.model.response;
 
+import com.example.shop.shop.type.StatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class PaymentResponse {
-    private String statusCode;
+public class StatusResponse {
+    private StatusCode statusCode;
 }

@@ -6,7 +6,7 @@ import com.example.shop.shop.model.entity.Basket;
 import com.example.shop.shop.model.entity.BasketOrder;
 import com.example.shop.shop.model.entity.Product;
 import com.example.shop.shop.model.entity.User;
-import com.example.shop.shop.model.request.BasketRequest;
+import com.example.shop.shop.model.dto.BasketDto;
 import com.example.shop.shop.repository.BasketRepository;
 import com.example.shop.shop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,35 +27,35 @@ public class BasketService {
     private final ProductRepository productRepository;
     private final UserService userService;
 
-    public double getTotalAmount(BasketRequest request) {
+    public double getTotalAmount(BasketDto request) {
         return request.getProducts().stream()
                 .mapToDouble(product -> product.getQuantity() * product.getProduct().getPrice())
                 .sum();
     }
 
     @Transactional
-    public BasketRequest addProductToBasket(Principal principal, Long productCode) {
+    public BasketDto addProductToBasket(Principal principal, Long productCode) {
         User user = userService.getLoggedUser(principal);
         Product product = productRepository.findProductByProductCode(productCode).orElseThrow(() -> new ProductNotExist(productCode.toString()));
         List<Basket> baskets = user.getBaskets();
-        Basket newBasket = findUnpaidBasket(baskets);
+        Optional<Basket> unpaidBasket = findUnpaidBasket(baskets);
 
-        if (newBasket == null) {
-            newBasket = createNewBasket(user, product);
-            baskets.add(newBasket);
+        if (unpaidBasket.isPresent()) {
+            updateBasketWithProduct(unpaidBasket.get(), product, productCode);
+            Basket savedBasket = basketRepository.save(unpaidBasket.get());
+            return basketMapper.convert(savedBasket);
         } else {
-            updateBasketWithProduct(newBasket, product, productCode);
+            Basket newBasket = createNewBasket(user, product);
+            baskets.add(newBasket);
+            Basket savedBasket = basketRepository.save(newBasket);
+            return basketMapper.convert(savedBasket);
         }
-
-        Basket savedBasket = basketRepository.save(newBasket);
-        return basketMapper.convert(savedBasket);
     }
 
-    private Basket findUnpaidBasket(List<Basket> baskets) {
+    private Optional<Basket> findUnpaidBasket(List<Basket> baskets) {
         return baskets.stream()
                 .filter(basket -> !basket.isPaid())
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     private Basket createNewBasket(User user, Product product) {

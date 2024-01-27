@@ -1,7 +1,7 @@
 package com.example.shop.shop.service;
 
 import com.example.shop.shop.exception.exceptions.TokenRequestException;
-import com.example.shop.shop.model.request.TokenRequest;
+import com.example.shop.shop.model.dto.UserDto;
 import com.example.shop.shop.model.request.UserRequest;
 import com.example.shop.shop.model.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +29,13 @@ public class TokenService {
 
     public String generate(Principal principal) {
         String generateTokenUrl = tokenBaseUrl + tokenGenerateUrl;
-        UserRequest user = userService.getUser(principal);
-        TokenRequest tokenRequest = new TokenRequest(user.getEmail());
+        UserDto user = userService.getUser(principal);
+        UserRequest request = new UserRequest(user.getEmail());
 
-        ResponseEntity<TokenResponse> tokenResponse = restTemplate.postForEntity(generateTokenUrl, tokenRequest, TokenResponse.class);
+        ResponseEntity<TokenResponse> response = restTemplate.postForEntity(generateTokenUrl, request, TokenResponse.class);
 
-        return Optional.ofNullable(tokenResponse.getBody())
+        return Optional.ofNullable(response.getBody())
                 .map(TokenResponse::getToken)
-                .orElseThrow(TokenRequestException::new);
+                .orElseThrow(() -> new TokenRequestException(principal.getName()));
     }
 }

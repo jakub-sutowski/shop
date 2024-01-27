@@ -1,8 +1,9 @@
 package com.example.shop.shop.service;
 
-import com.example.shop.shop.model.request.BasketRequest;
+import com.example.shop.shop.model.dto.BasketDto;
 import com.example.shop.shop.model.request.PaymentRequest;
-import com.example.shop.shop.util.StatusCodeTranslationUtil;
+import com.example.shop.shop.repository.BasketRepository;
+import com.example.shop.shop.type.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,24 +17,21 @@ public class PaymentService {
     private final UserService userService;
     private final TokenService tokenService;
     private final BankService bankService;
+    private final BasketRepository basketRepository;
 
-    private static final String SUCCESS_CODE = "1";
-    private static final String EMPTY_BASKET_CODE = "4";
-
-    public String pay(Principal principal) {
+    public StatusCode pay(Principal principal) {
         try {
-            BasketRequest basketByUser = userService.getBasketByUser(principal);
+            BasketDto basketByUser = userService.getBasketByUser(principal);
             double totalAmount = basketService.getTotalAmount(basketByUser);
             String token = tokenService.generate(principal);
             PaymentRequest paymentRequest = new PaymentRequest(principal.getName(), token, totalAmount);
-            String statusCode = bankService.pay(paymentRequest);
-            String status = StatusCodeTranslationUtil.translateStatusCode(statusCode);
-            if (statusCode.equals(SUCCESS_CODE)) {
+            StatusCode statusCode = bankService.pay(paymentRequest);
+            if (statusCode.equals(StatusCode.SUCCESS)) {
                 basketService.changeBasketToPaid(principal);
             }
-            return status;
+            return StatusCode.SUCCESS;
         } catch (Exception e) {
-            return StatusCodeTranslationUtil.translateStatusCode(EMPTY_BASKET_CODE);
+            return StatusCode.EMPTY_BASKET;
         }
     }
 }
